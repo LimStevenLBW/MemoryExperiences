@@ -9,6 +9,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip loadingClip;
     public AudioClip BGM;
     public AudioClip onClick;
+
+    public AudioClip monitorButtonPress;
+
     public bool isMuted;
     public static AudioManager instance { get; private set;}
   
@@ -36,5 +39,10 @@ public class AudioManager : MonoBehaviour
     public void PlayRecordClip()
     {
         source.PlayOneShot(onClick);
+    }
+
+    public void PlayMonitorButtonClip()
+    {
+        source.PlayOneShot(monitorButtonPress);
     }
 }

@@ -8,6 +8,7 @@ public class Imagejson
     public string gptPrompt;
     public string imageName;
     public string imageURL;
+
     public static Imagejson CreateFromJSON(string jsonString)
     {
         return JsonUtility.FromJson<Imagejson>(jsonString);
