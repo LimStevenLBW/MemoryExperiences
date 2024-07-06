@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MonitorManager : MonoBehaviour
 {
-    public List<Monitor> monitorList;
     public Transform rearSwapPos;
 
-    private Monitor previous;
-    private Monitor current;
-    private Monitor next;
+    private Monitor temp;
+    public Monitor previous;
+    public Monitor current;
+    public Monitor next;
 
     private Vector3 previousPos;
     private Vector3 currentPos;
@@ -18,10 +18,11 @@ public class MonitorManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        previous = monitorList[0];
-        current = monitorList[1];
-        next = monitorList[2];
+        UpdatePositions();
+    }
 
+    void UpdatePositions()
+    {
         previousPos = previous.transform.position;
         currentPos = current.transform.position;
         nextPos = next.transform.position;
@@ -43,33 +44,50 @@ public class MonitorManager : MonoBehaviour
     public void SwitchPrevious()
     {
         AudioManager.instance.PlayMonitorButtonClip();
-        monitorList[3] = monitorList[0];
+        UpdatePositions();
         previous.MoveTo(currentPos);
+        next.MoveTo(rearSwapPos.position, previousPos);
+        current.MoveTo(nextPos);
 
-        monitorList[0] = monitorList[1];
+        temp = current;
+        current = previous;
+        previous = next;
+        next = temp;
 
+
+
+        /*
+        temp = previous;
+        previous = current;
 
         current.MoveTo(nextPos);
-        monitorList[1] = monitorList[2];
+        current = next;
+ 
 
         next.MoveTo(rearSwapPos.position, previousPos);
-        monitorList[2] = monitorList[3];
-        
+        next = temp;
+        */
+
 
     }
 
     public void SwitchNext()
     {
-        Monitor temp;
+        AudioManager.instance.PlayMonitorButtonClip();
+        UpdatePositions();
         next.MoveTo(currentPos);
+        temp = next;
         next = current;
 
-        previous.MoveTo(rearSwapPos.position, nextPos);
-        temp = previous;
-
-        previous = next;
         current.MoveTo(previousPos);
-        current = temp;
+        current = previous;
+
+        previous.MoveTo(rearSwapPos.position, nextPos);
+        previous = temp;
+
+
+
+
 
     }
 }

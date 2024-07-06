@@ -509,12 +509,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bee21da009d449f9ddd91f61209fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monitorList:
-  - {fileID: 291443368}
-  - {fileID: 1288353933}
-  - {fileID: 188251113}
-  - {fileID: 188251113}
   rearSwapPos: {fileID: 1901326567}
+  previous: {fileID: 291443368}
+  current: {fileID: 1288353933}
+  next: {fileID: 188251113}
 --- !u!1 &291443362
 GameObject:
   m_ObjectHideFlags: 0

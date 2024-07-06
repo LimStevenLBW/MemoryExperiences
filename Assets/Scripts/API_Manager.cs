@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class API_Manager : MonoBehaviour
 {
@@ -79,7 +80,11 @@ public class API_Manager : MonoBehaviour
                 Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
                 JsonString = webRequest.downloadHandler.text; //json string
 
-                print(JsonString);
+                var results = JsonConvert.DeserializeObject<Root>(JsonString);
+                //var result = JsonConvert.DeserializeObject<Artifact[]>(JsonString);
+                var r = results.artifacts[0].imageURL;
+
+                Debug.Log(r);
 
                 break;
         }
