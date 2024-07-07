@@ -8,7 +8,8 @@ public class API_Manager : MonoBehaviour
 {
     private string JsonString;
     private string APILink;
-    public Monitor DLImage;
+    public MonitorManager monitorManager;
+
 
     //public ImagePrompt imagePrompt;
     // Start is called before the first frame update
@@ -56,7 +57,7 @@ public class API_Manager : MonoBehaviour
                 Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
 
                 json.printInfo();
-                DLImage.setImage(json.imageURL);
+                //DLImage.setImage(json.imageURL);
                 break;
         }
 
@@ -82,10 +83,15 @@ public class API_Manager : MonoBehaviour
 
                 var results = JsonConvert.DeserializeObject<Root>(JsonString);
                 //var result = JsonConvert.DeserializeObject<Artifact[]>(JsonString);
-                var r = results.artifacts[0].imageURL;
 
-                Debug.Log(r);
+                monitorManager.artifacts = results.artifacts;
 
+                int lastIndex = monitorManager.artifacts.Count - 1;
+                var urlCurrent = monitorManager.artifacts[lastIndex].imageURL;
+                var urlPrevious = monitorManager.artifacts[lastIndex - 1].imageURL;
+
+                monitorManager.current.setImage(urlCurrent, lastIndex);
+                monitorManager.previous.setImage(urlPrevious, lastIndex - 1);
                 break;
         }
 

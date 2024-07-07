@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MonitorManager : MonoBehaviour
 {
+    public List<Artifact> artifacts { get; set; }
     public Transform rearSwapPos;
 
     private Monitor temp;
@@ -43,6 +44,10 @@ public class MonitorManager : MonoBehaviour
 
     public void SwitchPrevious()
     {
+        int previousIndex = previous.index;
+        if (previousIndex == 0) return;
+        Debug.Log("previous:" + previousIndex);
+
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
         previous.MoveTo(currentPos);
@@ -54,20 +59,7 @@ public class MonitorManager : MonoBehaviour
         previous = next;
         next = temp;
 
-
-
-        /*
-        temp = previous;
-        previous = current;
-
-        current.MoveTo(nextPos);
-        current = next;
- 
-
-        next.MoveTo(rearSwapPos.position, previousPos);
-        next = temp;
-        */
-
+        previous.setImage(artifacts[previousIndex - 1].imageURL, previousIndex - 1);
 
     }
 
@@ -76,17 +68,13 @@ public class MonitorManager : MonoBehaviour
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
         next.MoveTo(currentPos);
-        temp = next;
-        next = current;
-
         current.MoveTo(previousPos);
-        current = previous;
-
         previous.MoveTo(rearSwapPos.position, nextPos);
+
+        temp = current;
+        current = next;
+        next = previous;
         previous = temp;
-
-
-
 
 
     }
