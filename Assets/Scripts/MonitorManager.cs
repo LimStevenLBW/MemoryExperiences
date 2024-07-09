@@ -47,6 +47,7 @@ public class MonitorManager : MonoBehaviour
         int previousIndex = previous.index;
         if (previousIndex == 0) return;
         Debug.Log("previous:" + previousIndex);
+        
 
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
@@ -65,6 +66,11 @@ public class MonitorManager : MonoBehaviour
 
     public void SwitchNext()
     {
+        int nextIndex = next.index;
+        Debug.Log("next:" + nextIndex);
+        if (nextIndex == artifacts.Count){
+            return;
+        }
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
         next.MoveTo(currentPos);
@@ -76,6 +82,7 @@ public class MonitorManager : MonoBehaviour
         next = previous;
         previous = temp;
 
+        next.setImage(artifacts[nextIndex+1].imageURL, nextIndex+1);
 
     }
 }

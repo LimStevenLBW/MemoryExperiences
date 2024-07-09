@@ -28,8 +28,10 @@ public class API_Manager : MonoBehaviour
    
     public void RequestImage(string prompt)
     {
+      
         string uri = APILink + "/robin/" + prompt; //building url
         StartCoroutine(GetRobinAPIRequest(uri));
+        Debug.Log("your code is down");
     }
     // Update is called once per frame
     
@@ -47,9 +49,12 @@ public class API_Manager : MonoBehaviour
         switch (webRequest.result)
         {
             case UnityWebRequest.Result.ConnectionError:
+                break;
             case UnityWebRequest.Result.DataProcessingError:
+               Debug.Log("Error1");
                 break;
             case UnityWebRequest.Result.ProtocolError:
+               Debug.Log("Error2");
                 break;
             case UnityWebRequest.Result.Success:
                 Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
@@ -57,7 +62,9 @@ public class API_Manager : MonoBehaviour
                 Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
 
                 json.printInfo();
-                //DLImage.setImage(json.imageURL);
+                monitorManager.current.setImage(json.imageURL);
+                //StartCoroutine(GetAllImagesRequest(APILink + "/readall"));
+                Debug.Log(json.imageURL);
                 break;
         }
 
@@ -87,11 +94,13 @@ public class API_Manager : MonoBehaviour
                 monitorManager.artifacts = results.artifacts;
 
                 int lastIndex = monitorManager.artifacts.Count - 1;
-                var urlCurrent = monitorManager.artifacts[lastIndex].imageURL;
-                var urlPrevious = monitorManager.artifacts[lastIndex - 1].imageURL;
+                var urlCurrent = monitorManager.artifacts[lastIndex-1].imageURL;
+                var urlPrevious = monitorManager.artifacts[lastIndex - 2].imageURL;
+                var urlNext = monitorManager.artifacts[lastIndex].imageURL;
 
-                monitorManager.current.setImage(urlCurrent, lastIndex);
-                monitorManager.previous.setImage(urlPrevious, lastIndex - 1);
+                monitorManager.next.setImage(urlNext, lastIndex);
+                monitorManager.current.setImage(urlCurrent, lastIndex-1);
+                monitorManager.previous.setImage(urlPrevious, lastIndex - 2);
                 break;
         }
 
