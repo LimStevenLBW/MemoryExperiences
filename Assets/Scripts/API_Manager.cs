@@ -10,14 +10,39 @@ public class API_Manager : MonoBehaviour
     private string APILink;
     public MonitorManager monitorManager;
 
+    private bool isRenderAwake;
 
     //public ImagePrompt imagePrompt;
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(WakeUpRender());
         APILink = "https://backend-server-tqhm.onrender.com";
+    }
 
-        GetAllImages();
+    IEnumerator WakeUpRender()
+    {
+        Debug.Log("Waking Up Render...");
+        using UnityWebRequest webRequest = UnityWebRequest.Get("https://backend-server-tqhm.onrender.com");
+        yield return webRequest.SendWebRequest();
+
+        switch (webRequest.result)
+        {
+            case UnityWebRequest.Result.ConnectionError:
+                Debug.Log(webRequest.error);
+                break;
+            case UnityWebRequest.Result.DataProcessingError:
+                Debug.Log(webRequest.error);
+                break;
+            case UnityWebRequest.Result.ProtocolError:
+                Debug.Log(webRequest.error);
+                break;
+            case UnityWebRequest.Result.Success:
+                Debug.Log("Server Awakened");
+                isRenderAwake = true;
+                break;
+        }
+        if (isRenderAwake) GetAllImages();
     }
 
     public void GetAllImages()
@@ -33,12 +58,7 @@ public class API_Manager : MonoBehaviour
         StartCoroutine(GetRobinAPIRequest(uri));
         Debug.Log("your code is down");
     }
-    // Update is called once per frame
-    
-    void Update()
-    {
-        
-    }
+
     IEnumerator GetRobinAPIRequest(string uri)
     {
         //imagePrompt.StartLoadingText();
@@ -57,7 +77,7 @@ public class API_Manager : MonoBehaviour
                Debug.Log("Error2");
                 break;
             case UnityWebRequest.Result.Success:
-                Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
+                Debug.Log(":\nFireStore Data Received: " + webRequest.downloadHandler.text);
                 JsonString = webRequest.downloadHandler.text; //json string
                 Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
 

@@ -44,10 +44,7 @@ public class MonitorManager : MonoBehaviour
 
     public void SwitchPrevious()
     {
-        int previousIndex = previous.index;
-        if (previousIndex == 0) return;
-        Debug.Log("previous:" + previousIndex);
-        
+        if (previous.index == 0) return;
 
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
@@ -60,15 +57,14 @@ public class MonitorManager : MonoBehaviour
         previous = next;
         next = temp;
 
-        previous.setImage(artifacts[previousIndex - 1].imageURL, previousIndex - 1);
+        previous.setImage(artifacts[current.index - 1].imageURL, current.index - 1);
 
     }
 
     public void SwitchNext()
     {
-        int nextIndex = next.index;
-        Debug.Log("next:" + nextIndex);
-        if (nextIndex == artifacts.Count){
+        //Debug.Log("next: " + next.index);
+        if (next.index == artifacts.Count - 1 || current.index == artifacts.Count - 2){
             return;
         }
         AudioManager.instance.PlayMonitorButtonClip();
@@ -82,7 +78,7 @@ public class MonitorManager : MonoBehaviour
         next = previous;
         previous = temp;
 
-        next.setImage(artifacts[nextIndex+1].imageURL, nextIndex+1);
+        next.setImage(artifacts[current.index+1].imageURL, current.index+1);
 
     }
 }

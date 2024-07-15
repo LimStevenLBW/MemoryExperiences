@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,6 +12,8 @@ public class Monitor : MonoBehaviour
     public int index { get; set; }
 
     public MonitorCover cover;
+
+    public TextMeshPro text;
     //public ImagePrompt imagePrompt;
 
     void Start()
@@ -55,8 +58,6 @@ public class Monitor : MonoBehaviour
         }
     }
 
-
-
     public void setImage(string url)
     {
         StartCoroutine(DownloadImage(url));
@@ -74,7 +75,7 @@ public class Monitor : MonoBehaviour
         yield return request.SendWebRequest();
         //imagePrompt.StopLoadingText();
 
-        if (request.isNetworkError || request.isHttpError)
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         { 
             Debug.Log(request.error);
             cover.StopLoadingText();
@@ -89,6 +90,7 @@ public class Monitor : MonoBehaviour
             mat.mainTexture = myTexture;
             meshRenderer.material.mainTexture = myTexture;
             cover.StopLoadingText();
+            text.SetText("#" + index);
         }
     }   
 }
