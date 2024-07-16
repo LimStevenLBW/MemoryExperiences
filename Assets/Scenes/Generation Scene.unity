@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18428779, g: 0.5832273, b: 0.7312675, a: 1}
+  m_IndirectSpecularColor: {r: 0.18433955, g: 0.58341706, b: 0.7314896, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1436,7 +1436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 467958963}
   videoImage: {fileID: 1031947339}
-  videoUrl: https://videos.pexels.com/video-files/6924608/6924608-hd_1080_1920_24fps.mp4
+  videoUrl: https://videos.pexels.com/video-files/855029/855029-hd_1920_1080_30fps.mp4
 --- !u!1 &549124495
 GameObject:
   m_ObjectHideFlags: 0
