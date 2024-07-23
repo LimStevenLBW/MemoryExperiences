@@ -27,6 +27,12 @@ public class VideoLoader : MonoBehaviour
         videoPlayer.Prepare();
     }
 
+    public void SetNewVideoURL(string url)
+    {
+        videoUrl = url;
+        PlayVideo();
+    }
+
     // Update is called once per frame
     void Update()
     {

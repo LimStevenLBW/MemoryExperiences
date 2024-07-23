@@ -9,6 +9,7 @@ public class API_Manager : MonoBehaviour
     private string JsonString;
     private string APILink;
     public MonitorManager monitorManager;
+    public VideoLoader videoLoader;
 
     private bool isRenderAwake;
 
@@ -51,14 +52,45 @@ public class API_Manager : MonoBehaviour
         StartCoroutine(GetAllImagesRequest(uri));
     }
    
+    //Also Requests a video now
     public void RequestImage(string prompt)
     {
       
         string uri = APILink + "/robin/" + prompt; //building url
         StartCoroutine(GetRobinAPIRequest(uri));
-        Debug.Log("your code is down");
+
+        string uri2 = APILink + "/video/" + prompt;
+        StartCoroutine(GetVideoAPIRequest(uri2));
     }
 
+    IEnumerator GetVideoAPIRequest(string uri)
+    {
+        using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
+        yield return webRequest.SendWebRequest();
+
+        switch (webRequest.result)
+        {
+            case UnityWebRequest.Result.ConnectionError:
+                break;
+            case UnityWebRequest.Result.DataProcessingError:
+                Debug.Log("Error1");
+                break;
+            case UnityWebRequest.Result.ProtocolError:
+                Debug.Log("Error2");
+                break;
+            case UnityWebRequest.Result.Success:
+
+                string videoJsonString = webRequest.downloadHandler.text; //json string
+                //Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
+                //json.printInfo();
+
+                Debug.Log("Video Request JSON" + videoJsonString);
+
+                //videoUrl = videoJsonString. something
+                //videoLoader.SetNewVideoURL(videoUrl)
+                break;
+        }
+    }
     IEnumerator GetRobinAPIRequest(string uri)
     {
         //imagePrompt.StartLoadingText();
