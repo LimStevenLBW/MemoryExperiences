@@ -3753,6 +3753,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monitorManager: {fileID: 272372463}
+  videoLoader: {fileID: 467958965}
 --- !u!4 &1400455398
 Transform:
   m_ObjectHideFlags: 0
