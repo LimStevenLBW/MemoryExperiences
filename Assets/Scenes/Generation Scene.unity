@@ -5023,7 +5023,7 @@ MonoBehaviour:
   loadedImage: {fileID: 8300000, guid: c12556ee7960d46279c7847b67c7d216, type: 3}
   loadingClip: {fileID: 8300000, guid: 5e35a27f0e99a4008bb7a13eac741201, type: 3}
   BGM: {fileID: 8300000, guid: 75a6052ac31c70f4a9f7b9b5a106e548, type: 3}
-  onClick: {fileID: 8300000, guid: 07407d49ccb5f4351a2dc1436e4925dc, type: 3}
+  onClick: {fileID: 8300000, guid: cc78a7906fc8b4ac9be0e33daa2fcdb3, type: 3}
   monitorButtonPress: {fileID: 8300000, guid: 0546c23cc784e454d9902386922793de, type: 3}
   videoPlayer: {fileID: 467958963}
   isMuted: 0

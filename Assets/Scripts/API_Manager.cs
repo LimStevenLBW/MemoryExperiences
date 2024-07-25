@@ -18,18 +18,14 @@ public class API_Manager : MonoBehaviour
     void Start()
     {
         StartCoroutine(WakeUpRender());
-        //APILink = "https://backend-server-tqhm.onrender.com";
-
-        APILink = "https://pyflask-re8t.onrender.com";
-
-
+        APILink = "https://backend-server-tqhm.onrender.com";
     }
 
     IEnumerator WakeUpRender()
     {
         Debug.Log("Checking if Render is awake..");
-        //using UnityWebRequest webRequest = UnityWebRequest.Get("https://backend-server-tqhm.onrender.com");
-        using UnityWebRequest webRequest = UnityWebRequest.Get("https://pyflask-re8t.onrender.com");
+        using UnityWebRequest webRequest = UnityWebRequest.Get("https://backend-server-tqhm.onrender.com");
+
         yield return webRequest.SendWebRequest();
 
         switch (webRequest.result)
