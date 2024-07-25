@@ -18,13 +18,18 @@ public class API_Manager : MonoBehaviour
     void Start()
     {
         StartCoroutine(WakeUpRender());
-        APILink = "https://backend-server-tqhm.onrender.com";
+        //APILink = "https://backend-server-tqhm.onrender.com";
+
+        APILink = "https://pyflask-re8t.onrender.com";
+
+
     }
 
     IEnumerator WakeUpRender()
     {
-        Debug.Log("Waking Up Render...");
-        using UnityWebRequest webRequest = UnityWebRequest.Get("https://backend-server-tqhm.onrender.com");
+        Debug.Log("Checking if Render is awake..");
+        //using UnityWebRequest webRequest = UnityWebRequest.Get("https://backend-server-tqhm.onrender.com");
+        using UnityWebRequest webRequest = UnityWebRequest.Get("https://pyflask-re8t.onrender.com");
         yield return webRequest.SendWebRequest();
 
         switch (webRequest.result)
@@ -71,18 +76,25 @@ public class API_Manager : MonoBehaviour
         switch (webRequest.result)
         {
             case UnityWebRequest.Result.ConnectionError:
+                Debug.Log("Connection Error with Video API Request");
                 break;
             case UnityWebRequest.Result.DataProcessingError:
-                Debug.Log("Error1");
+                Debug.Log("Data Processing Error with  Video API Request");
                 break;
             case UnityWebRequest.Result.ProtocolError:
-                Debug.Log("Error2");
+                Debug.Log("Protocol Error with Video API Request, check openai and pexels key");
                 break;
             case UnityWebRequest.Result.Success:
-
+               // { "urls": "https: pexels.com/."}
                 string videoJsonString = webRequest.downloadHandler.text; //json string
                 //Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
                 //json.printInfo();
+
+                var results = JsonConvert.DeserializeObject<UrlsJson>(videoJsonString);
+
+                string videoLink = results.urls[0];
+
+                videoLoader.SetNewVideoURL(videoLink);
 
                 Debug.Log("Video Request JSON" + videoJsonString);
 
@@ -101,15 +113,16 @@ public class API_Manager : MonoBehaviour
         switch (webRequest.result)
         {
             case UnityWebRequest.Result.ConnectionError:
+                Debug.Log("Connection Error");
                 break;
             case UnityWebRequest.Result.DataProcessingError:
-               Debug.Log("Error1");
+                Debug.Log("Data Processing Error with Robin API Request");
                 break;
             case UnityWebRequest.Result.ProtocolError:
-               Debug.Log("Error2");
+                Debug.Log("Protocol Error with Robin API Request");
                 break;
             case UnityWebRequest.Result.Success:
-                Debug.Log(":\nFireStore Data Received: " + webRequest.downloadHandler.text);
+                Debug.Log(":\nDatabase Data Received: " + webRequest.downloadHandler.text);
                 JsonString = webRequest.downloadHandler.text; //json string
                 Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
 

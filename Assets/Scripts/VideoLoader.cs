@@ -10,8 +10,6 @@ public class VideoLoader : MonoBehaviour
     public RawImage videoImage;
     public string videoUrl = "https://videos.pexels.com/video-files/6924608/6924608-hd_1080_1920_24fps.mp4";
 
-    private bool isMuted;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -39,12 +37,6 @@ public class VideoLoader : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H))
         {
             videoImage.enabled = !videoImage.enabled;
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            if(isMuted) videoPlayer.SetDirectAudioVolume(0, 0.3f);
-            else videoPlayer.SetDirectAudioVolume(0, 0);  //Mute the audio
         }
     }
 }

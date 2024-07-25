@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class AudioManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip monitorButtonPress;
 
+    public VideoPlayer videoPlayer;
     public bool isMuted;
     public static AudioManager instance { get; private set;}
   
@@ -28,7 +30,21 @@ public class AudioManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (!isMuted)
+            {
+                isMuted = true;
+                source.volume = 0;
+                videoPlayer.SetDirectAudioVolume(0, 0.3f);
+            }
+            else
+            {
+                isMuted = false;
+                source.volume = 0.5f;
+                videoPlayer.SetDirectAudioVolume(0, 0);  //Mute the audio
+            }
+        }
     }
 
     public void PlayBGM()

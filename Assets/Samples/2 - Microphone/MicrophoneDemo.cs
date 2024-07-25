@@ -28,7 +28,6 @@ namespace Whisper.Samples
         public ScrollRect scroll;
         public API_Manager apiManager;
 
-
         private string _buffer;
 
         private bool activated = false;
@@ -37,12 +36,13 @@ namespace Whisper.Samples
         {
             inputField = GameObject.FindWithTag("input").GetComponent<InputFieldPrompt>();
         }
+
         private void Update()
         {
             if (inputField.activated == true) return;
             if (Input.GetKeyDown("y"))
             {
-
+                AudioManager.instance.PlayRecordClip();
                 OnButtonPressed();
             }
         }
@@ -77,13 +77,13 @@ namespace Whisper.Samples
             {
                 activated = true;
                 microphoneRecord.StartRecord();
-                buttonText.text = "Stop";
+                buttonText.text = "Stop Recording";
             }
             else
             {
                 activated = false;
                 microphoneRecord.StopRecord();
-                buttonText.text = "Record";
+                buttonText.text = "Record Audio";
             }
         }
         
