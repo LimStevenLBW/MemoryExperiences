@@ -9,7 +9,7 @@ public class VideoLoader : MonoBehaviour
     public VideoPlayer videoPlayer;
     public RawImage videoImage;
     public string videoUrl = "https://videos.pexels.com/video-files/6924608/6924608-hd_1080_1920_24fps.mp4";
-
+    public InputFieldPrompt inputField;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +34,7 @@ public class VideoLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.H) && !inputField.activated)
         {
             videoImage.enabled = !videoImage.enabled;
         }

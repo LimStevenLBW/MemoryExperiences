@@ -17,14 +17,17 @@ public class API_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // APILink = "https://backend-server-tqhm.onrender.com";
+        APILink = "https://pyflask-re8t.onrender.com";
+
         StartCoroutine(WakeUpRender());
-        APILink = "https://backend-server-tqhm.onrender.com";
+
     }
 
     IEnumerator WakeUpRender()
     {
         Debug.Log("Checking if Render is awake..");
-        using UnityWebRequest webRequest = UnityWebRequest.Get("https://backend-server-tqhm.onrender.com");
+        using UnityWebRequest webRequest = UnityWebRequest.Get(APILink);
 
         yield return webRequest.SendWebRequest();
 

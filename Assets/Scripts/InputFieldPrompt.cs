@@ -18,6 +18,7 @@ public class InputFieldPrompt : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        activated = textField.isFocused;
         if (activated == true) return;
         if (Input.GetKeyDown("t"))
         {

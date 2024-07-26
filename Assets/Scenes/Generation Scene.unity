@@ -1470,6 +1470,7 @@ MonoBehaviour:
   videoPlayer: {fileID: 467958963}
   videoImage: {fileID: 1031947339}
   videoUrl: https://videos.pexels.com/video-files/855029/855029-hd_1920_1080_30fps.mp4
+  inputField: {fileID: 549124500}
 --- !u!1 &549124495
 GameObject:
   m_ObjectHideFlags: 0
@@ -5027,6 +5028,7 @@ MonoBehaviour:
   monitorButtonPress: {fileID: 8300000, guid: 0546c23cc784e454d9902386922793de, type: 3}
   videoPlayer: {fileID: 467958963}
   isMuted: 0
+  inputField: {fileID: 549124500}
 --- !u!1 &2045698603
 GameObject:
   m_ObjectHideFlags: 0

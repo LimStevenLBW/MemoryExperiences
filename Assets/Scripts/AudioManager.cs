@@ -15,6 +15,8 @@ public class AudioManager : MonoBehaviour
 
     public VideoPlayer videoPlayer;
     public bool isMuted;
+
+    public InputFieldPrompt inputField;
     public static AudioManager instance { get; private set;}
   
     // Start is called before the first frame update
@@ -30,7 +32,7 @@ public class AudioManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.M) && !inputField.activated)
         {
             if (!isMuted)
             {
