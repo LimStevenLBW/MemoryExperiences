@@ -17,8 +17,8 @@ public class API_Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // APILink = "https://backend-server-tqhm.onrender.com";
-        APILink = "https://pyflask-re8t.onrender.com";
+        APILink = "https://backend-server-tqhm.onrender.com";
+        // APILink = "https://pyflask-re8t.onrender.com";
 
         StartCoroutine(WakeUpRender());
 
