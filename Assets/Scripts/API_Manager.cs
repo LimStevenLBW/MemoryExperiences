@@ -126,7 +126,7 @@ public class API_Manager : MonoBehaviour
                 Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
 
                 json.printInfo();
-                monitorManager.current.setImage(json.imageURL);
+                monitorManager.middle.setImage(json.imageURL);
                 //StartCoroutine(GetAllImagesRequest(APILink + "/readall"));
                 Debug.Log(json.imageURL);
                 break;
@@ -158,13 +158,14 @@ public class API_Manager : MonoBehaviour
                 monitorManager.artifacts = results.artifacts;
 
                 int lastIndex = monitorManager.artifacts.Count - 1;
-                var urlCurrent = monitorManager.artifacts[lastIndex-1].imageURL;
-                var urlPrevious = monitorManager.artifacts[lastIndex - 2].imageURL;
-                var urlNext = monitorManager.artifacts[lastIndex].imageURL;
 
-                monitorManager.next.setImage(urlNext, lastIndex);
-                monitorManager.current.setImage(urlCurrent, lastIndex-1);
-                monitorManager.previous.setImage(urlPrevious, lastIndex - 2);
+                var urlLeft = monitorManager.artifacts[lastIndex - 2].imageURL;
+                var urlMiddle = monitorManager.artifacts[lastIndex - 1].imageURL;
+                var urlRight = monitorManager.artifacts[lastIndex].imageURL;
+
+                monitorManager.left.setImage(urlLeft, lastIndex - 2);
+                monitorManager.middle.setImage(urlMiddle, lastIndex - 1);
+                monitorManager.right.setImage(urlRight, lastIndex);
                 break;
         }
 

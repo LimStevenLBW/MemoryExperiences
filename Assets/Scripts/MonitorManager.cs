@@ -8,13 +8,13 @@ public class MonitorManager : MonoBehaviour
     public Transform rearSwapPos;
 
     private Monitor temp;
-    public Monitor previous;
-    public Monitor current;
-    public Monitor next;
+    public Monitor left;
+    public Monitor middle;
+    public Monitor right;
 
-    private Vector3 previousPos;
-    private Vector3 currentPos;
-    private Vector3 nextPos;
+    private Vector3 leftPos;
+    private Vector3 middlePos;
+    private Vector3 rightPos;
 
     // Start is called before the first frame update
     void Start()
@@ -24,61 +24,66 @@ public class MonitorManager : MonoBehaviour
 
     void UpdatePositions()
     {
-        previousPos = previous.transform.position;
-        currentPos = current.transform.position;
-        nextPos = next.transform.position;
+        leftPos = left.transform.position;
+        middlePos = middle.transform.position;
+        rightPos = right.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (left.Busy() || middle.Busy() || right.Busy()) return;
+
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            SwitchPrevious();
+            Switchleft();
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            SwitchNext();
+            Switchright();
         }
     }
 
-    public void SwitchPrevious()
+    public void Switchleft()
     {
-        if (previous.index == 0) return;
+        if (left.index == 0) return;
 
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
-        previous.MoveTo(currentPos);
-        next.MoveTo(rearSwapPos.position, previousPos);
-        current.MoveTo(nextPos);
+        
+        right.MoveTo(rearSwapPos.position, leftPos);
+        middle.MoveTo(rightPos);
+        left.MoveTo(middlePos);
 
-        temp = current;
-        current = previous;
-        previous = next;
-        next = temp;
+        // L M R
+        // N L M
 
-        previous.setImage(artifacts[current.index - 1].imageURL, current.index - 1);
-
+        temp = right;
+        right = middle;
+        middle = left;
+        left = temp;
+        left.setImage(artifacts[middle.index-1].imageURL, middle.index-1);
     }
 
-    public void SwitchNext()
+    public void Switchright()
     {
-        //Debug.Log("next: " + next.index);
-        if (next.index == artifacts.Count - 1 || current.index == artifacts.Count - 2){
-            return;
-        }
+        if (right.index == artifacts.Count - 1) return;
+
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
-        next.MoveTo(currentPos);
-        current.MoveTo(previousPos);
-        previous.MoveTo(rearSwapPos.position, nextPos);
 
-        temp = current;
-        current = next;
-        next = previous;
-        previous = temp;
+        left.MoveTo(rearSwapPos.position, rightPos);
+        middle.MoveTo(leftPos);
+        right.MoveTo(middlePos);
 
-        next.setImage(artifacts[current.index+1].imageURL, current.index+1);
+        // L M R
+        // M R N
 
+        temp = left;
+        left = middle;
+        middle = right;
+        right = temp;
+
+        right.setImage(artifacts[middle.index+1].imageURL, middle.index+1);
     }
 }

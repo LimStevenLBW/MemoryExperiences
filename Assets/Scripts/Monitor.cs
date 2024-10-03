@@ -16,6 +16,9 @@ public class Monitor : MonoBehaviour
     public TextMeshPro text;
     //public ImagePrompt imagePrompt;
 
+    private bool moving;
+    private bool downloadingImage;
+
     void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
@@ -35,15 +38,18 @@ public class Monitor : MonoBehaviour
     
     IEnumerator MoveToPosition(Vector3 position)
     {
+        moving = true;
         while (Vector3.Distance(transform.position, position) > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, position, speed * Time.deltaTime);
             yield return null;
         }
+        moving = false;
     }
 
     IEnumerator MoveToPositions(Vector3 position1, Vector3 position2)
     {
+        moving = true;
         while (Vector3.Distance(transform.position, position1) > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, position1, speed*2.1f * Time.deltaTime);
@@ -56,6 +62,7 @@ public class Monitor : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, position2, speed*2.1f * Time.deltaTime);
             yield return null;
         }
+        moving = false;
     }
 
     public void setImage(string url)
@@ -70,6 +77,7 @@ public class Monitor : MonoBehaviour
 
     IEnumerator DownloadImage(string MediaUrl) //download image and make it to the material
     {
+        downloadingImage = true;
         cover.StartLoadingText();
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
         yield return request.SendWebRequest();
@@ -92,5 +100,10 @@ public class Monitor : MonoBehaviour
             cover.StopLoadingText();
             text.SetText("#" + index);
         }
-    }   
+        downloadingImage = false;
+    }
+
+    public bool Busy() {
+        return downloadingImage && moving;
+    }
 }
