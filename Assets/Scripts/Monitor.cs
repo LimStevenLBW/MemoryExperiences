@@ -24,42 +24,45 @@ public class Monitor : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void MoveTo(Vector3 position)
+    public void MoveTo(Vector3 position, Vector3 rotation)
     {
         StopAllCoroutines();
-        StartCoroutine(MoveToPosition(position));
+        StartCoroutine(MoveToPosition(position, rotation));
     }
 
-    public void MoveTo(Vector3 position1, Vector3 position2)
+    public void MoveTo(Vector3 position1, Vector3 rotation1, Vector3 position2, Vector3 rotation2)
     {
         StopAllCoroutines();
-        StartCoroutine(MoveToPositions(position1, position2));
+        StartCoroutine(MoveToPositions(position1, rotation1, position2, rotation2));
     }
     
-    IEnumerator MoveToPosition(Vector3 position)
+    IEnumerator MoveToPosition(Vector3 position, Vector3 rotation)
     {
         moving = true;
-        while (Vector3.Distance(transform.position, position) > 0.001f)
+        while (Vector3.Distance(transform.position, position) > 0.001f || Vector3.Distance(transform.rotation.eulerAngles, rotation) > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, position, speed * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(Vector3.MoveTowards(transform.rotation.eulerAngles, rotation, speed * Time.deltaTime));
             yield return null;
         }
         moving = false;
     }
 
-    IEnumerator MoveToPositions(Vector3 position1, Vector3 position2)
+    IEnumerator MoveToPositions(Vector3 position1, Vector3 rotation1, Vector3 position2, Vector3 rotation2)
     {
         moving = true;
-        while (Vector3.Distance(transform.position, position1) > 0.001f)
+        while (Vector3.Distance(transform.position, position1) > 0.001f || Vector3.Distance(transform.rotation.eulerAngles, rotation1) > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, position1, speed*2.1f * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(Vector3.MoveTowards(transform.rotation.eulerAngles, rotation1, speed * Time.deltaTime));
             yield return null;
         }
 
         // Check if the position of the cube and sphere are approximately equal.
-        while (Vector3.Distance(transform.position, position2) > 0.001f)
+        while (Vector3.Distance(transform.position, position2) > 0.001f || Vector3.Distance(transform.rotation.eulerAngles, rotation2) > 0.001f)
         {
             transform.position = Vector3.MoveTowards(transform.position, position2, speed*2.1f * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(Vector3.MoveTowards(transform.rotation.eulerAngles, rotation2, speed * Time.deltaTime));
             yield return null;
         }
         moving = false;

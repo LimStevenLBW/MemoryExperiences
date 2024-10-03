@@ -12,9 +12,13 @@ public class MonitorManager : MonoBehaviour
     public Monitor middle;
     public Monitor right;
 
+    private Vector3 rearSwapRotation;
     private Vector3 leftPos;
+    private Vector3 leftRotation;
     private Vector3 middlePos;
+    private Vector3 middleRotation;
     private Vector3 rightPos;
+    private Vector3 rightRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -24,9 +28,13 @@ public class MonitorManager : MonoBehaviour
 
     void UpdatePositions()
     {
+        rearSwapRotation = rearSwapPos.rotation.eulerAngles;
         leftPos = left.transform.position;
+        leftRotation = left.transform.rotation.eulerAngles;
         middlePos = middle.transform.position;
+        middleRotation = middle.transform.rotation.eulerAngles;
         rightPos = right.transform.position;
+        rightRotation = right.transform.rotation.eulerAngles;
     }
 
     // Update is called once per frame
@@ -51,9 +59,9 @@ public class MonitorManager : MonoBehaviour
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
         
-        right.MoveTo(rearSwapPos.position, leftPos);
-        middle.MoveTo(rightPos);
-        left.MoveTo(middlePos);
+        right.MoveTo(rearSwapPos.position, rearSwapRotation, leftPos, leftRotation);
+        middle.MoveTo(rightPos, rightRotation);
+        left.MoveTo(middlePos, middleRotation);
 
         // L M R
         // N L M
@@ -72,9 +80,9 @@ public class MonitorManager : MonoBehaviour
         AudioManager.instance.PlayMonitorButtonClip();
         UpdatePositions();
 
-        left.MoveTo(rearSwapPos.position, rightPos);
-        middle.MoveTo(leftPos);
-        right.MoveTo(middlePos);
+        left.MoveTo(rearSwapPos.position, rearSwapRotation, rightPos, rightRotation);
+        middle.MoveTo(leftPos, leftRotation);
+        right.MoveTo(middlePos, middleRotation);
 
         // L M R
         // M R N
