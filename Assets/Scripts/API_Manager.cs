@@ -10,7 +10,6 @@ public class API_Manager : MonoBehaviour
     private string APILink;
     public MonitorManager monitorManager;
     public VideoLoader videoLoader;
-
     private bool isRenderAwake;
 
     //public ImagePrompt imagePrompt;
@@ -96,9 +95,6 @@ public class API_Manager : MonoBehaviour
                 videoLoader.SetNewVideoURL(videoLink);
 
                 Debug.Log("Video Request JSON" + videoJsonString);
-
-                //videoUrl = videoJsonString. something
-                //videoLoader.SetNewVideoURL(videoUrl)
                 break;
         }
     }
