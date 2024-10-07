@@ -7,15 +7,8 @@ using UnityEngine.Video;
 public class VideoLoader : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
-    public RawImage videoImage;
-    public string videoUrl = "https://videos.pexels.com/video-files/6924608/6924608-hd_1080_1920_24fps.mp4";
-    public InputFieldPrompt inputField;
-    // Start is called before the first frame update
-    void Start()
-    {
-        PlayVideo();
-    }
-
+    public string videoUrl;
+    
     void PlayVideo()
     {
         videoPlayer.url = videoUrl;
@@ -29,14 +22,5 @@ public class VideoLoader : MonoBehaviour
     {
         videoUrl = url;
         PlayVideo();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H) && !inputField.activated)
-        {
-            videoImage.enabled = !videoImage.enabled;
-        }
     }
 }

@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class MonitorManager : MonoBehaviour
 {
     public List<Artifact> artifacts { get; set; }
     public Transform rearSwapPos;
+    public static bool videoMode = false;
 
     private Monitor temp;
     public Monitor left;
@@ -50,6 +52,10 @@ public class MonitorManager : MonoBehaviour
         {
             Switchright();
         }
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            // ToggleVideoMode(); // Hide for now, the videos aren't so great
+        }
     }
 
     public void Switchleft()
@@ -70,7 +76,8 @@ public class MonitorManager : MonoBehaviour
         right = middle;
         middle = left;
         left = temp;
-        left.setImage(artifacts[middle.index-1].imageURL, middle.index-1);
+
+        left.SetArtifact(artifacts[middle.index - 1], middle.index - 1);
     }
 
     public void Switchright()
@@ -92,6 +99,27 @@ public class MonitorManager : MonoBehaviour
         middle = right;
         right = temp;
 
-        right.setImage(artifacts[middle.index+1].imageURL, middle.index+1);
+        right.SetArtifact(artifacts[middle.index + 1], middle.index + 1);
+    }
+
+    public void AddArtifact(Artifact a) {
+        bool onLastItem = right.index == artifacts.Count - 1;
+        artifacts.Add(a);
+        if (onLastItem) {
+            Switchright();
+        }
+    }
+
+    public void ToggleVideoMode() {
+        videoMode = !videoMode;
+        if (videoMode) {
+            left.DownloadVideo();
+            middle.DownloadVideo();
+            right.DownloadVideo();
+        } else {
+            left.HideVideo();
+            middle.HideVideo();
+            right.HideVideo();
+        }
     }
 }

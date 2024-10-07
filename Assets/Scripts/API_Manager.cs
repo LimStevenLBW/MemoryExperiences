@@ -9,7 +9,7 @@ public class API_Manager : MonoBehaviour
     private string JsonString;
     private string APILink;
     public MonitorManager monitorManager;
-    public VideoLoader videoLoader;
+    // public VideoLoader videoLoader;
     private bool isRenderAwake;
 
     //public ImagePrompt imagePrompt;
@@ -55,18 +55,20 @@ public class API_Manager : MonoBehaviour
         StartCoroutine(GetAllImagesRequest(uri));
     }
    
-    //Also Requests a video now
     public void RequestImage(string prompt)
     {
       
         string uri = APILink + "/robin/" + prompt; //building url
         StartCoroutine(GetRobinAPIRequest(uri));
-
-        string uri2 = APILink + "/video/" + prompt;
-        StartCoroutine(GetVideoAPIRequest(uri2));
     }
 
-    IEnumerator GetVideoAPIRequest(string uri)
+    public void RequestVideo(string prompt, VideoLoader loader) {
+        string uri2 = APILink + "/video/" + prompt;
+        StartCoroutine(GetVideoAPIRequest(uri2, loader));
+    }
+
+
+    IEnumerator GetVideoAPIRequest(string uri, VideoLoader loader)
     {
         using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
         yield return webRequest.SendWebRequest();
@@ -89,10 +91,8 @@ public class API_Manager : MonoBehaviour
                 //json.printInfo();
 
                 var results = JsonConvert.DeserializeObject<UrlsJson>(videoJsonString);
-
                 string videoLink = results.urls[0];
-
-                videoLoader.SetNewVideoURL(videoLink);
+                loader.SetNewVideoURL(videoLink);
 
                 Debug.Log("Video Request JSON" + videoJsonString);
                 break;
@@ -118,16 +118,13 @@ public class API_Manager : MonoBehaviour
                 break;
             case UnityWebRequest.Result.Success:
                 Debug.Log(":\nDatabase Data Received: " + webRequest.downloadHandler.text);
-                JsonString = webRequest.downloadHandler.text; //json string
-                Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
 
-                json.printInfo();
-                monitorManager.middle.setImage(json.imageURL);
-                //StartCoroutine(GetAllImagesRequest(APILink + "/readall"));
-                Debug.Log(json.imageURL);
+                JsonString = webRequest.downloadHandler.text; //json string
+                Artifact newImage = JsonConvert.DeserializeObject<Artifact>(JsonString);
+
+                monitorManager.AddArtifact(newImage);
                 break;
         }
-
     }
 
     IEnumerator GetAllImagesRequest(string uri)
@@ -155,13 +152,9 @@ public class API_Manager : MonoBehaviour
 
                 int lastIndex = monitorManager.artifacts.Count - 1;
 
-                var urlLeft = monitorManager.artifacts[lastIndex - 2].imageURL;
-                var urlMiddle = monitorManager.artifacts[lastIndex - 1].imageURL;
-                var urlRight = monitorManager.artifacts[lastIndex].imageURL;
-
-                monitorManager.left.setImage(urlLeft, lastIndex - 2);
-                monitorManager.middle.setImage(urlMiddle, lastIndex - 1);
-                monitorManager.right.setImage(urlRight, lastIndex);
+                monitorManager.left.SetArtifact(monitorManager.artifacts[lastIndex - 2], lastIndex-2);
+                monitorManager.middle.SetArtifact(monitorManager.artifacts[lastIndex - 1], lastIndex-1);
+                monitorManager.right.SetArtifact(monitorManager.artifacts[lastIndex], lastIndex);
                 break;
         }
 

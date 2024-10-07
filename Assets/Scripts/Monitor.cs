@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -7,17 +8,18 @@ using UnityEngine.Networking;
 
 public class Monitor : MonoBehaviour
 {
+    public API_Manager APIManager;
     private float speed = 300;
     private MeshRenderer meshRenderer;
     public int index { get; set; }
-
     public MonitorCover cover;
-
     public TextMeshPro text;
-    //public ImagePrompt imagePrompt;
+    public VideoLoader loader;
+    public Material videoMat;
 
     private bool moving;
     private bool downloadingImage;
+    private Artifact artifact;
 
     void Start()
     {
@@ -68,14 +70,23 @@ public class Monitor : MonoBehaviour
         moving = false;
     }
 
-    public void setImage(string url)
-    {
-        StartCoroutine(DownloadImage(url));
-    }
-    public void setImage(string url, int index)
-    {
+    public void SetArtifact(Artifact artifact, int index) {
+        this.artifact = artifact;
         this.index = index;
-        StartCoroutine(DownloadImage(url));
+        StartCoroutine(DownloadImage(artifact.imageURL));
+        if (MonitorManager.videoMode) {
+            DownloadVideo();
+        }
+    }
+
+    public void DownloadVideo() {
+        APIManager.RequestVideo(artifact.gptPrompt, loader);
+        meshRenderer.SetMaterials(new List<Material>{videoMat});
+    }
+
+    public void HideVideo() {
+        loader.videoPlayer.Stop(); 
+        StartCoroutine(DownloadImage(artifact.imageURL));
     }
 
     IEnumerator DownloadImage(string MediaUrl) //download image and make it to the material
@@ -84,7 +95,6 @@ public class Monitor : MonoBehaviour
         cover.StartLoadingText();
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
         yield return request.SendWebRequest();
-        //imagePrompt.StopLoadingText();
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         { 
@@ -93,13 +103,18 @@ public class Monitor : MonoBehaviour
         }
         else
         {
-            //Texture.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-            //texture=SetTexture("Image", ((DownloadHandlerTexture)request.downloadHandler).texture);
+            print("Downloaded " + index.ToString());
 
             Texture2D myTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-            var mat = new Material(Shader.Find("UI/Default"));
-            mat.mainTexture = myTexture;
-            meshRenderer.material.mainTexture = myTexture;
+
+            // Use Unlit/Texture shader which respects scaling
+            var mat = new Material(Shader.Find("Unlit/Texture"));
+            mat.SetTexture("_MainTex", myTexture);
+            mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // Flip the texture horizontally
+
+            // Apply the material to the mesh
+            meshRenderer.SetMaterials(new List<Material>{mat});
+
             cover.StopLoadingText();
             text.SetText("#" + index);
         }
