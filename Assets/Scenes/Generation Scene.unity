@@ -6345,8 +6345,8 @@ MonoBehaviour:
   printLanguage: 1
   button: {fileID: 1411299088327096364}
   buttonText: {fileID: 0}
-  outputText: {fileID: 8201863990064326077}
-  timeText: {fileID: 8455051265508503725}
+  outputText: {fileID: 0}
+  timeText: {fileID: 0}
   languageDropdown: {fileID: 5116857217259917908}
   translateToggle: {fileID: 1196965094351904599}
   vadToggle: {fileID: 487873845085295756}

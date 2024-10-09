@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Whisper.Utils;
@@ -19,7 +20,7 @@ namespace Whisper.Samples
 
         [Header("UI")] 
         public Button button;
-        public Text buttonText;
+        public TextMeshProUGUI buttonText;
         public Text outputText;
         public Text timeText;
         public Dropdown languageDropdown;
@@ -101,7 +102,7 @@ namespace Whisper.Samples
 
             var time = sw.ElapsedMilliseconds;
             var rate = recordedAudio.Length / (time * 0.001f);
-            timeText.text = $"Time: {time} ms\nRate: {rate:F1}x";
+            // timeText.text = $"Time: {time} ms\nRate: {rate:F1}x";
 
             var text = res.Result;
             if (printLanguage)

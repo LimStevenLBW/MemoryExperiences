@@ -54,7 +54,7 @@ public class MonitorManager : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            // ToggleVideoMode(); // Hide for now, the videos aren't so great
+            ToggleVideoMode(); // Hide for now, the videos aren't so great
         }
     }
 

@@ -62,13 +62,13 @@ public class API_Manager : MonoBehaviour
         StartCoroutine(GetRobinAPIRequest(uri));
     }
 
-    public void RequestVideo(string prompt, VideoLoader loader) {
+    public void RequestVideo(string prompt, Monitor monitor) {
         string uri2 = APILink + "/video/" + prompt;
-        StartCoroutine(GetVideoAPIRequest(uri2, loader));
+        StartCoroutine(GetVideoAPIRequest(uri2, monitor));
     }
 
 
-    IEnumerator GetVideoAPIRequest(string uri, VideoLoader loader)
+    IEnumerator GetVideoAPIRequest(string uri, Monitor monitor)
     {
         using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
         yield return webRequest.SendWebRequest();
@@ -83,6 +83,7 @@ public class API_Manager : MonoBehaviour
                 break;
             case UnityWebRequest.Result.ProtocolError:
                 Debug.Log("Protocol Error with Video API Request, check openai and pexels key");
+                monitor.HideVideo();
                 break;
             case UnityWebRequest.Result.Success:
                // { "urls": "https: pexels.com/."}
@@ -92,7 +93,8 @@ public class API_Manager : MonoBehaviour
 
                 var results = JsonConvert.DeserializeObject<UrlsJson>(videoJsonString);
                 string videoLink = results.urls[0];
-                loader.SetNewVideoURL(videoLink);
+                monitor.loader.SetNewVideoURL(videoLink);
+                monitor.ShowVideo();
 
                 Debug.Log("Video Request JSON" + videoJsonString);
                 break;

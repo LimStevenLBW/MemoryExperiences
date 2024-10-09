@@ -80,7 +80,10 @@ public class Monitor : MonoBehaviour
     }
 
     public void DownloadVideo() {
-        APIManager.RequestVideo(artifact.gptPrompt, loader);
+        APIManager.RequestVideo(artifact.gptPrompt, this);
+    }
+
+    public void ShowVideo() {
         meshRenderer.SetMaterials(new List<Material>{videoMat});
     }
 
