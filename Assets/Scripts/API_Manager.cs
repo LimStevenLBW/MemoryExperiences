@@ -70,6 +70,7 @@ public class API_Manager : MonoBehaviour
 
     IEnumerator GetVideoAPIRequest(string uri, Monitor monitor)
     {
+        monitor.downloadingImage = true;
         using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
         yield return webRequest.SendWebRequest();
 
@@ -99,6 +100,7 @@ public class API_Manager : MonoBehaviour
                 Debug.Log("Video Request JSON" + videoJsonString);
                 break;
         }
+        monitor.downloadingImage = false;
     }
     IEnumerator GetRobinAPIRequest(string uri)
     {

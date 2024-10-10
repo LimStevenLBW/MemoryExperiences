@@ -18,7 +18,7 @@ public class Monitor : MonoBehaviour
     public Material videoMat;
 
     private bool moving;
-    private bool downloadingImage;
+    public bool downloadingImage;
     private Artifact artifact;
 
     void Start()
