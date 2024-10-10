@@ -78,13 +78,13 @@ namespace Whisper.Samples
             {
                 activated = true;
                 microphoneRecord.StartRecord();
-                buttonText.text = "Stop Recording";
+                buttonText.text = "Stop";
             }
             else
             {
                 activated = false;
                 microphoneRecord.StopRecord();
-                buttonText.text = "Record Audio";
+                buttonText.text = "Record";
             }
         }
         
