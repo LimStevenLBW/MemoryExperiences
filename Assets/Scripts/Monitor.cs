@@ -94,32 +94,57 @@ public class Monitor : MonoBehaviour
     {
         downloadingImage = true;
         cover.StartLoadingText();
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
-        yield return request.SendWebRequest();
 
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-        { 
-            Debug.Log(request.error);
-            cover.StopLoadingText();
-        }
-        else
+        int attempt = 0;
+        int maxAttempts = 3;
+        bool success = false;
+
+        while (attempt < maxAttempts && !success)
         {
-            print("Downloaded " + index.ToString());
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl);
+            yield return request.SendWebRequest();
 
-            Texture2D myTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError) {
+                Debug.Log($"Attempt {attempt + 1} failed: {request.error}");
 
-            // Use Unlit/Texture shader which respects scaling
-            var mat = new Material(Shader.Find("Unlit/Texture"));
-            mat.SetTexture("_MainTex", myTexture);
-            mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // Flip the texture horizontally
+                attempt++;
 
-            // Apply the material to the mesh
-            meshRenderer.SetMaterials(new List<Material>{mat});
+                if (attempt >= maxAttempts)
+                {
+                    Debug.Log("Max retry attempts reached. Stopping.");
+                    cover.StopLoadingText();
+                    downloadingImage = false;
+                    yield break;
+                }
 
-            cover.StopLoadingText();
-            indexText.SetText("#" + index);
+                // Optional: Wait a moment before retrying
+                yield return new WaitForSeconds(2.0f);
+            }
+            else {
+                print("Downloaded " + index.ToString());
+
+                Texture2D myTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+
+                // Use Unlit/Texture shader which respects scaling
+                var mat = new Material(Shader.Find("Unlit/Texture"));
+                mat.SetTexture("_MainTex", myTexture);
+                mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // Flip the texture horizontally
+
+                // Apply the material to the mesh
+                meshRenderer.SetMaterials(new List<Material>{mat});
+
+                cover.StopLoadingText();
+                indexText.SetText("#" + index);
+
+                success = true;
+            }
         }
+
         downloadingImage = false;
+
+        if (MonitorManager.videoMode) {
+            ShowVideo();
+        }
     }
 
     public bool Busy() {
