@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using TMPro;
 
 public class API_Manager : MonoBehaviour
 {
     private string JsonString;
     private string APILink;
     public MonitorManager monitorManager;
-    // public VideoLoader videoLoader;
     private bool isRenderAwake;
+    public TextMeshProUGUI outputText;
 
-    //public ImagePrompt imagePrompt;
-    // Start is called before the first frame update
     void Start()
     {
-        APILink = "https://backend-server-tqhm.onrender.com";
-        // APILink = "https://pyflask-re8t.onrender.com";
-
+        APILink = "https://two798-robin-server.onrender.com";
         StartCoroutine(WakeUpRender());
-
     }
 
     IEnumerator WakeUpRender()
@@ -51,83 +47,66 @@ public class API_Manager : MonoBehaviour
 
     public void GetAllImages()
     {
-        string uri = APILink + "/readall"; //building url
+        string uri = APILink + "/get_all";
         StartCoroutine(GetAllImagesRequest(uri));
     }
    
-    public void RequestImage(string prompt)
-    {
-      
-        string uri = APILink + "/robin/" + prompt; //building url
-        StartCoroutine(GetRobinAPIRequest(uri));
+    public void RequestMemory(string prompt) {
+        outputText.text = "Generating...";
+        StartCoroutine(GenerateMemory(prompt));
     }
 
-    public void RequestVideo(string prompt, Monitor monitor) {
-        string uri2 = APILink + "/video/" + prompt;
-        StartCoroutine(GetVideoAPIRequest(uri2, monitor));
-    }
-
-
-    IEnumerator GetVideoAPIRequest(string uri, Monitor monitor)
+    IEnumerator GenerateMemory(string memory)
     {
-        monitor.downloadingImage = true;
-        using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
-        yield return webRequest.SendWebRequest();
+        int maxRetries = 3;
+        int retries = 0;
+        bool success = false;
 
-        switch (webRequest.result)
-        {
-            case UnityWebRequest.Result.ConnectionError:
-                Debug.Log("Connection Error with Video API Request");
-                break;
-            case UnityWebRequest.Result.DataProcessingError:
-                Debug.Log("Data Processing Error with  Video API Request");
-                break;
-            case UnityWebRequest.Result.ProtocolError:
-                Debug.Log("Protocol Error with Video API Request, check openai and pexels key");
-                monitor.HideVideo();
-                break;
-            case UnityWebRequest.Result.Success:
-               // { "urls": "https: pexels.com/."}
-                string videoJsonString = webRequest.downloadHandler.text; //json string
-                //Imagejson json = Imagejson.CreateFromJSON(JsonString); //json object
-                //json.printInfo();
+        while (retries < maxRetries && !success) {
+            using UnityWebRequest webRequest = UnityWebRequest.Get(APILink + "/generate_memory/" + memory);
+            yield return webRequest.SendWebRequest();
 
-                var results = JsonConvert.DeserializeObject<UrlsJson>(videoJsonString);
-                string videoLink = results.urls[0];
-                monitor.loader.SetNewVideoURL(videoLink);
-                monitor.ShowVideo();
+            switch (webRequest.result) {
+                case UnityWebRequest.Result.ConnectionError:
+                    Debug.Log("Connection Error");
+                    break;
+                    
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.Log("Data Processing Error with Robin API Request");
+                    break;
 
-                Debug.Log("Video Request JSON" + videoJsonString);
-                break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.Log("Protocol Error with Robin API Request");
+                    break;
+
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(":\nDatabase Data Received: " + webRequest.downloadHandler.text);
+                    
+                    JsonString = webRequest.downloadHandler.text; //json string
+                    try
+                    {
+                        Artifact newMemory = JsonConvert.DeserializeObject<Artifact>(JsonString);
+                        monitorManager.AddArtifact(newMemory);
+                        outputText.text = "";
+                        success = true; // Request was successful, exit loop
+                    }
+                    catch (System.Exception exception)
+                    {
+                        retries++;
+                        Debug.Log("ERROR: " + exception);
+                    }
+                    break;
+            }
+
+            retries++;
+            if (!success && retries < maxRetries) {
+                outputText.text = "Still generating... ";
+                yield return new WaitForSeconds(2); // Optional: add a delay before retrying
+            }
         }
-        monitor.downloadingImage = false;
-    }
-    IEnumerator GetRobinAPIRequest(string uri)
-    {
-        //imagePrompt.StartLoadingText();
-        using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
-        // Request and wait for the desired page.
-        yield return webRequest.SendWebRequest();
-      
-        switch (webRequest.result)
-        {
-            case UnityWebRequest.Result.ConnectionError:
-                Debug.Log("Connection Error");
-                break;
-            case UnityWebRequest.Result.DataProcessingError:
-                Debug.Log("Data Processing Error with Robin API Request");
-                break;
-            case UnityWebRequest.Result.ProtocolError:
-                Debug.Log("Protocol Error with Robin API Request");
-                break;
-            case UnityWebRequest.Result.Success:
-                Debug.Log(":\nDatabase Data Received: " + webRequest.downloadHandler.text);
 
-                JsonString = webRequest.downloadHandler.text; //json string
-                Artifact newImage = JsonConvert.DeserializeObject<Artifact>(JsonString);
-
-                monitorManager.AddArtifact(newImage);
-                break;
+        if (!success) {
+            outputText.text = "Sorry, try again.";
         }
     }
 
@@ -153,15 +132,20 @@ public class API_Manager : MonoBehaviour
                 //var result = JsonConvert.DeserializeObject<Artifact[]>(JsonString);
 
                 monitorManager.artifacts = results.artifacts;
-
                 int lastIndex = monitorManager.artifacts.Count - 1;
+                monitorManager.left.index = 0;
+                monitorManager.right.index = -1;
 
-                monitorManager.left.SetArtifact(monitorManager.artifacts[lastIndex - 2], lastIndex-2);
-                monitorManager.middle.SetArtifact(monitorManager.artifacts[lastIndex - 1], lastIndex-1);
-                monitorManager.right.SetArtifact(monitorManager.artifacts[lastIndex], lastIndex);
+                if (monitorManager.artifacts.Count > 0)
+                    monitorManager.right.SetArtifact(monitorManager.artifacts[lastIndex], lastIndex);
+                
+                if (monitorManager.artifacts.Count > 1)
+                    monitorManager.middle.SetArtifact(monitorManager.artifacts[lastIndex - 1], lastIndex-1);
+
+                if (monitorManager.artifacts.Count > 2)
+                    monitorManager.left.SetArtifact(monitorManager.artifacts[lastIndex - 2], lastIndex-2);
+
                 break;
         }
-
     }
-
 }

@@ -13,7 +13,8 @@ public class Monitor : MonoBehaviour
     private MeshRenderer meshRenderer;
     public int index { get; set; }
     public MonitorCover cover;
-    public TextMeshPro text;
+    public TextMeshPro indexText;
+    public TextMeshPro memoryText;
     public VideoLoader loader;
     public Material videoMat;
 
@@ -73,21 +74,18 @@ public class Monitor : MonoBehaviour
     public void SetArtifact(Artifact artifact, int index) {
         this.artifact = artifact;
         this.index = index;
+        memoryText.text = artifact.originalPrompt;
         StartCoroutine(DownloadImage(artifact.imageURL));
-        if (MonitorManager.videoMode) {
-            DownloadVideo();
-        }
-    }
-
-    public void DownloadVideo() {
-        APIManager.RequestVideo(artifact.gptPrompt, this);
     }
 
     public void ShowVideo() {
+        if (artifact == null) return;
+        loader.SetNewVideoURL(artifact.videoURL);
         meshRenderer.SetMaterials(new List<Material>{videoMat});
     }
 
     public void HideVideo() {
+        if (artifact == null) return;
         loader.videoPlayer.Stop(); 
         StartCoroutine(DownloadImage(artifact.imageURL));
     }
@@ -119,7 +117,7 @@ public class Monitor : MonoBehaviour
             meshRenderer.SetMaterials(new List<Material>{mat});
 
             cover.StopLoadingText();
-            text.SetText("#" + index);
+            indexText.SetText("#" + index);
         }
         downloadingImage = false;
     }

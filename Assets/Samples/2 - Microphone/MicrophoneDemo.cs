@@ -109,7 +109,7 @@ namespace Whisper.Samples
                 text += $"\n\nLanguage: {res.Language}";
             
             outputText.text = text;
-            apiManager.RequestImage(text);
+            apiManager.RequestMemory(text);
             UiUtils.ScrollDown(scroll);
         }
         

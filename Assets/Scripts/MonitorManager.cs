@@ -6,6 +6,7 @@ public class MonitorManager : MonoBehaviour
     public List<Artifact> artifacts { get; set; }
     public Transform rearSwapPos;
     public static bool videoMode = false;
+    public InputFieldPrompt inputFieldPrompt;
 
     private Monitor temp;
     public Monitor left;
@@ -51,8 +52,8 @@ public class MonitorManager : MonoBehaviour
             Switchright();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            ToggleVideoMode(); // Hide for now, the videos aren't so great
+        if (!inputFieldPrompt.activated && Input.GetKeyDown(KeyCode.Space)) {
+            ToggleVideoMode();
         }
     }
 
@@ -111,9 +112,9 @@ public class MonitorManager : MonoBehaviour
     public void ToggleVideoMode() {
         videoMode = !videoMode;
         if (videoMode) {
-            left.DownloadVideo();
-            middle.DownloadVideo();
-            right.DownloadVideo();
+            left.ShowVideo();
+            middle.ShowVideo();
+            right.ShowVideo();
         } else {
             left.HideVideo();
             middle.HideVideo();
