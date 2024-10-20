@@ -52,12 +52,14 @@ public class API_Manager : MonoBehaviour
     }
    
     public void RequestMemory(string prompt) {
+        print("Received " + prompt);
         outputText.text = "Generating...";
         StartCoroutine(GenerateMemory(prompt));
     }
 
     IEnumerator GenerateMemory(string memory)
     {
+        print("Generating... " + memory);
         int maxRetries = 3;
         int retries = 0;
         bool success = false;
